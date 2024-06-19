@@ -1,40 +1,71 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MemberForm from "./MemberForm";
 import MemberList from "./MemberList";
-
-const initialSeniorMembers = [
-  { id: 1, name: "Jan Kowalski", expiryDate: "2024-06-30" },
-  { id: 2, name: "Anna Nowak", expiryDate: "2023-12-31" },
-];
+import { db } from "../firebase"; // Importuj instancję bazy danych Firestore
+import {
+  collection,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  getDocs,
+} from "firebase/firestore";
 
 const SeniorGroup = () => {
-  const [members, setMembers] = useState(initialSeniorMembers);
+  const [members, setMembers] = useState([]);
   const [editingMember, setEditingMember] = useState(null);
 
-  // Sortowanie członków - przeterminowane na samej górze
-  const sortedMembers = [...members].sort((a, b) => {
-    const expiryDateA = new Date(a.expiryDate);
-    const expiryDateB = new Date(b.expiryDate);
-    return expiryDateA - expiryDateB; // Sortowanie od najwcześniejszej daty
-  });
+  useEffect(() => {
+    fetchMembers();
+  }, []);
 
-  const handleSave = (member) => {
-    if (editingMember) {
-      setMembers(members.map((m) => (m.id === member.id ? member : m)));
-    } else {
-      setMembers([...members, member]);
+  // Pobierz wszystkich członków z Firestore
+  const fetchMembers = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "seniorMembers"));
+      const membersData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setMembers(membersData);
+    } catch (error) {
+      console.error("Error fetching members:", error);
     }
-    setEditingMember(null);
   };
 
+  // Zapisz lub zaktualizuj członka w Firestore
+  const handleSave = async (member) => {
+    try {
+      if (editingMember) {
+        const memberRef = doc(db, "seniorMembers", editingMember.id);
+        await updateDoc(memberRef, member);
+      } else {
+        await addDoc(collection(db, "seniorMembers"), member);
+      }
+      await fetchMembers(); // Odśwież listę członków po zapisie lub aktualizacji
+      setEditingMember(null);
+    } catch (error) {
+      console.error("Error saving member:", error);
+    }
+  };
+
+  // Edytuj wybranego członka
   const handleEdit = (member) => {
     setEditingMember(member);
   };
 
-  const handleDelete = (id) => {
-    setMembers(members.filter((m) => m.id !== id));
+  // Usuń wybranego członka z Firestore
+  const handleDelete = async (id) => {
+    try {
+      const memberRef = doc(db, "seniorMembers", id);
+      await deleteDoc(memberRef);
+      await fetchMembers(); // Odśwież listę członków po usunięciu
+    } catch (error) {
+      console.error("Error deleting member:", error);
+    }
   };
 
+  // Anuluj edycję lub dodawanie nowego członka
   const handleCancel = () => {
     setEditingMember(null);
   };
@@ -48,7 +79,7 @@ const SeniorGroup = () => {
         onCancel={handleCancel}
       />
       <MemberList
-        members={sortedMembers} // Używamy posortowanej listy
+        members={members}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />

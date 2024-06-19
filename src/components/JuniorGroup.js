@@ -1,15 +1,61 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
+import { db } from "../firebase";
 import MemberForm from "./MemberForm";
 import MemberList from "./MemberList";
 
-const initialJuniorMembers = [
-  { id: 3, name: "Piotr Wiśniewski", expiryDate: "2024-01-15" },
-  { id: 4, name: "Katarzyna Zielińska", expiryDate: "2024-02-28" },
-];
-
 const JuniorGroup = () => {
-  const [members, setMembers] = useState(initialJuniorMembers);
+  const [members, setMembers] = useState([]);
   const [editingMember, setEditingMember] = useState(null);
+
+  useEffect(() => {
+    const fetchMembers = async () => {
+      const querySnapshot = await getDocs(collection(db, "juniorMembers"));
+      const membersData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setMembers(membersData);
+    };
+
+    fetchMembers();
+  }, []);
+
+  const handleSave = async (member) => {
+    if (editingMember) {
+      const memberRef = doc(db, "juniorMembers", editingMember.id);
+      await updateDoc(memberRef, member);
+    } else {
+      await addDoc(collection(db, "juniorMembers"), member);
+    }
+    const querySnapshot = await getDocs(collection(db, "juniorMembers"));
+    const membersData = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setMembers(membersData);
+    setEditingMember(null);
+  };
+
+  const handleEdit = (member) => {
+    setEditingMember(member);
+  };
+
+  const handleDelete = async (id) => {
+    await deleteDoc(doc(db, "juniorMembers", id));
+    setMembers(members.filter((m) => m.id !== id));
+  };
+
+  const handleCancel = () => {
+    setEditingMember(null);
+  };
 
   // Sortowanie członków - przeterminowane na samej górze
   const sortedMembers = [...members].sort((a, b) => {
@@ -18,30 +64,9 @@ const JuniorGroup = () => {
     return expiryDateA - expiryDateB; // Sortowanie od najwcześniejszej daty
   });
 
-  const handleSave = (member) => {
-    if (editingMember) {
-      setMembers(members.map((m) => (m.id === member.id ? member : m)));
-    } else {
-      setMembers([...members, member]);
-    }
-    setEditingMember(null);
-  };
-
-  const handleEdit = (member) => {
-    setEditingMember(member);
-  };
-
-  const handleDelete = (id) => {
-    setMembers(members.filter((m) => m.id !== id));
-  };
-
-  const handleCancel = () => {
-    setEditingMember(null);
-  };
-
   return (
     <div>
-      <h1> Młodziaki</h1>
+      <h1>Młodziaki</h1>
       <MemberForm
         member={editingMember}
         onSave={handleSave}

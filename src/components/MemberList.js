@@ -18,7 +18,7 @@ const MemberList = ({ members, onEdit, onDelete }) => {
   };
 
   const handleDelete = (id, name) => {
-    if (window.confirm(`Are you sure you want to delete ${name}?`)) {
+    if (window.confirm(`Czy na pewno chcesz usunąć członka ${name}?`)) {
       onDelete(id);
     }
   };
@@ -27,9 +27,9 @@ const MemberList = ({ members, onEdit, onDelete }) => {
     <table className="member-table">
       <thead>
         <tr>
-          <th className="name-cell">Imie i Nazwisko</th>
+          <th className="name-cell">Imię i Nazwisko</th>
           <th className="status-cell">Status karnetu</th>
-          <th className="actions-cell">Akcja</th>
+          <th className="actions-cell">Akcje</th>
         </tr>
       </thead>
       <tbody>
