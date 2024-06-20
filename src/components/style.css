@@ -1,0 +1,28 @@
+.nazwa {
+  font-size: 18px;
+  padding-right: 10px;
+  margin-bottom: 20px;
+}
+.znazwa {
+  margin-bottom: 15px;
+}
+.kalendarz {
+  padding-right: 10px;
+  font-size: 18px;
+}
+.butony {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+.anuluj {
+  margin-left: 20px;
+}
+.usun {
+  background-color: red;
+  border-radius: 5px;
+}
+.zmiana {
+  border-radius: 5px;
+  background-color: yellow;
+  margin-bottom: 5px;
+}

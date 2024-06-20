@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../firebase";
+import "./style.css";
 import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
-
 const MemberForm = ({ member, onSave, onCancel, onClick, collectionName }) => {
   const [name, setName] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
@@ -43,8 +43,8 @@ const MemberForm = ({ member, onSave, onCancel, onClick, collectionName }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>
-        <label>Imię i Nazwisko:</label>
+      <div className="znazwa">
+        <label className="nazwa">Imię i Nazwisko:</label>
         <input
           type="text"
           value={name}
@@ -53,7 +53,7 @@ const MemberForm = ({ member, onSave, onCancel, onClick, collectionName }) => {
         />
       </div>
       <div>
-        <label>Data ważności karnetu:</label>
+        <label className="kalendarz">Data ważności karnetu:</label>
         <input
           type="date"
           value={expiryDate}
@@ -61,12 +61,14 @@ const MemberForm = ({ member, onSave, onCancel, onClick, collectionName }) => {
           required
         />
       </div>
-      <button onClick={onClick} type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Zapisywanie..." : "Zapisz"}
-      </button>
-      <button type="button" onClick={onCancel}>
-        Anuluj
-      </button>
+      <div className="butony">
+        <button onClick={onClick} type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Zapisywanie..." : "Zapisz"}
+        </button>
+        <button className="anuluj" type="button" onClick={onCancel}>
+          Anuluj
+        </button>
+      </div>
     </form>
   );
 };

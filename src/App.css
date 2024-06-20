@@ -1,11 +1,15 @@
 .App {
   text-align: center;
+
+  margin: 0;
 }
 
 .App-header {
   background-color: #282c34;
   padding: 20px;
+  margin: 0;
   color: white;
+  max-width: 95vw;
 }
 
 nav ul {
@@ -55,7 +59,7 @@ li {
 
 .member-table th,
 .member-table td {
-  padding: 10px;
+  padding: 5px;
   border-bottom: 1px solid #ddd;
 }
 

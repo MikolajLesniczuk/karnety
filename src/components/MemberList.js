@@ -1,5 +1,6 @@
 import React from "react";
 import "../App.css"; // Importujemy arkusz stylów CSS
+import "./style.css";
 
 const MemberList = ({ members, onEdit, onDelete }) => {
   const getMemberStatusClass = (expiryDate) => {
@@ -50,8 +51,13 @@ const MemberList = ({ members, onEdit, onDelete }) => {
                 : "Aktywny"}
             </td>
             <td className="actions-cell">
-              <button onClick={() => onEdit(member)}>Zmień dane</button>
-              <button onClick={() => handleDelete(member.id, member.name)}>
+              <button className="zmiana" onClick={() => onEdit(member)}>
+                Zmień dane
+              </button>
+              <button
+                className="usun"
+                onClick={() => handleDelete(member.id, member.name)}
+              >
                 Usuń zawodnika
               </button>
             </td>
