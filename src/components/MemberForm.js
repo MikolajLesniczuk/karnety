@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { db } from "../firebase"; // Importuj instancję bazy danych Firestore
-import { collection, addDoc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase";
+import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
 
 const MemberForm = ({ member, onSave, onCancel }) => {
   const [name, setName] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (member) {
       setName(member.name);
       setExpiryDate(member.expiryDate);
     } else {
-      // Jeśli member jest null, czyścimy formularz
       setName("");
       setExpiryDate("");
     }
@@ -19,24 +19,25 @@ const MemberForm = ({ member, onSave, onCancel }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     const memberData = { name, expiryDate };
 
     try {
-      if (member) {
-        const memberRef = collection(db, "seniorMembers").doc(member.id); // Poprawka: doc(member.id) zamiast collection(db, "seniorMembers", member.id)
+      if (member && member.id) {
+        const memberRef = doc(db, "seniorMembers", member.id);
         await updateDoc(memberRef, memberData);
       } else {
-        const docRef = await addDoc(
-          collection(db, "seniorMembers"),
-          memberData
-        );
-        memberData.id = docRef.id; // Dodajemy ID nowo dodanego dokumentu do danych członka
+        await addDoc(collection(db, "seniorMembers"), memberData);
       }
-      onSave(memberData);
-      setName(""); // Wyczyszczenie stanu formularza po zapisaniu
-      setExpiryDate(""); // Wyczyszczenie stanu formularza po zapisaniu
+      onSave(); // Remove the parameter
+      setName("");
+      setExpiryDate("");
     } catch (error) {
       console.error("Error saving member:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -60,7 +61,9 @@ const MemberForm = ({ member, onSave, onCancel }) => {
           required
         />
       </div>
-      <button type="submit">Zapisz</button>
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Zapisywanie..." : "Zapisz"}
+      </button>
       <button type="button" onClick={onCancel}>
         Anuluj
       </button>

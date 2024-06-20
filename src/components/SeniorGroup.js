@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import MemberForm from "./MemberForm";
 import MemberList from "./MemberList";
-import { db } from "../firebase"; // Importuj instancję bazy danych Firestore
+import { db } from "../firebase";
 import {
   collection,
-  doc,
   addDoc,
   updateDoc,
   deleteDoc,
   getDocs,
+  doc,
 } from "firebase/firestore";
 
 const SeniorGroup = () => {
@@ -19,7 +19,6 @@ const SeniorGroup = () => {
     fetchMembers();
   }, []);
 
-  // Pobierz wszystkich członków z Firestore
   const fetchMembers = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "seniorMembers"));
@@ -33,7 +32,6 @@ const SeniorGroup = () => {
     }
   };
 
-  // Zapisz lub zaktualizuj członka w Firestore
   const handleSave = async (member) => {
     try {
       if (editingMember) {
@@ -42,37 +40,35 @@ const SeniorGroup = () => {
       } else {
         await addDoc(collection(db, "seniorMembers"), member);
       }
-      await fetchMembers(); // Odśwież listę członków po zapisie lub aktualizacji
+      // Fetch the updated members list
       setEditingMember(null);
+      fetchMembers();
     } catch (error) {
       console.error("Error saving member:", error);
     }
   };
 
-  // Edytuj wybranego członka
   const handleEdit = (member) => {
     setEditingMember(member);
   };
 
-  // Usuń wybranego członka z Firestore
   const handleDelete = async (id) => {
     try {
       const memberRef = doc(db, "seniorMembers", id);
       await deleteDoc(memberRef);
-      await fetchMembers(); // Odśwież listę członków po usunięciu
+      fetchMembers(); // Fetch the updated members list
     } catch (error) {
       console.error("Error deleting member:", error);
     }
   };
 
-  // Anuluj edycję lub dodawanie nowego członka
   const handleCancel = () => {
     setEditingMember(null);
   };
 
   return (
     <div>
-      <h1>Stare dziady</h1>
+      <h1>Senior Group</h1>
       <MemberForm
         member={editingMember}
         onSave={handleSave}

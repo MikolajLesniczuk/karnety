@@ -28,6 +28,7 @@ const MemberList = ({ members, onEdit, onDelete }) => {
       <thead>
         <tr>
           <th className="name-cell">Imię i Nazwisko</th>
+          <th className="expiry-date-cell">Data ważności</th>
           <th className="status-cell">Status karnetu</th>
           <th className="actions-cell">Akcje</th>
         </tr>
@@ -36,6 +37,7 @@ const MemberList = ({ members, onEdit, onDelete }) => {
         {members.map((member) => (
           <tr key={member.id}>
             <td className="name-cell">{member.name}</td>
+            <td className="expiry-date-cell">{member.expiryDate}</td>
             <td
               className={`status-cell ${getMemberStatusClass(
                 member.expiryDate

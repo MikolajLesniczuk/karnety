@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { db } from "../firebase";
 import {
   collection,
   addDoc,
-  getDocs,
   updateDoc,
   deleteDoc,
+  getDocs,
   doc,
+  query,
+  where,
 } from "firebase/firestore";
-import { db } from "../firebase";
 import MemberForm from "./MemberForm";
 import MemberList from "./MemberList";
 
@@ -16,32 +18,43 @@ const JuniorGroup = () => {
   const [editingMember, setEditingMember] = useState(null);
 
   useEffect(() => {
-    const fetchMembers = async () => {
+    fetchMembers();
+  }, []);
+
+  const fetchMembers = async () => {
+    try {
       const querySnapshot = await getDocs(collection(db, "juniorMembers"));
       const membersData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
       setMembers(membersData);
-    };
-
-    fetchMembers();
-  }, []);
+    } catch (error) {
+      console.error("Error fetching members:", error);
+    }
+  };
 
   const handleSave = async (member) => {
-    if (editingMember) {
-      const memberRef = doc(db, "juniorMembers", editingMember.id);
-      await updateDoc(memberRef, member);
-    } else {
-      await addDoc(collection(db, "juniorMembers"), member);
+    try {
+      if (editingMember) {
+        const memberRef = doc(db, "juniorMembers", editingMember.id);
+        await updateDoc(memberRef, member);
+        setMembers((prevMembers) =>
+          prevMembers.map((m) =>
+            m.id === editingMember.id ? { id: editingMember.id, ...member } : m
+          )
+        );
+      } else {
+        const docRef = await addDoc(collection(db, "juniorMembers"), member);
+        setMembers((prevMembers) => [
+          ...prevMembers,
+          { id: docRef.id, ...member },
+        ]);
+      }
+      setEditingMember(null);
+    } catch (error) {
+      console.error("Error saving member:", error);
     }
-    const querySnapshot = await getDocs(collection(db, "juniorMembers"));
-    const membersData = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setMembers(membersData);
-    setEditingMember(null);
   };
 
   const handleEdit = (member) => {
@@ -49,8 +62,13 @@ const JuniorGroup = () => {
   };
 
   const handleDelete = async (id) => {
-    await deleteDoc(doc(db, "juniorMembers", id));
-    setMembers(members.filter((m) => m.id !== id));
+    try {
+      const memberRef = doc(db, "juniorMembers", id);
+      await deleteDoc(memberRef);
+      setMembers((prevMembers) => prevMembers.filter((m) => m.id !== id));
+    } catch (error) {
+      console.error("Error deleting member:", error);
+    }
   };
 
   const handleCancel = () => {
