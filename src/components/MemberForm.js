@@ -46,6 +46,7 @@ const MemberForm = ({ member, onSave, onCancel, onClick, collectionName }) => {
       <div className="znazwa">
         <label className="nazwa">Imię i Nazwisko:</label>
         <input
+          className="inputnazwa"
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -55,6 +56,7 @@ const MemberForm = ({ member, onSave, onCancel, onClick, collectionName }) => {
       <div>
         <label className="kalendarz">Data ważności karnetu:</label>
         <input
+          className="inputkal"
           type="date"
           value={expiryDate}
           onChange={(e) => setExpiryDate(e.target.value)}
@@ -62,7 +64,12 @@ const MemberForm = ({ member, onSave, onCancel, onClick, collectionName }) => {
         />
       </div>
       <div className="butony">
-        <button onClick={onClick} type="submit" disabled={isSubmitting}>
+        <button
+          className="zapisz"
+          onClick={onClick}
+          type="submit"
+          disabled={isSubmitting}
+        >
           {isSubmitting ? "Zapisywanie..." : "Zapisz"}
         </button>
         <button className="anuluj" type="button" onClick={onCancel}>

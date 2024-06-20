@@ -16,6 +16,14 @@
 }
 .anuluj {
   margin-left: 20px;
+  width: 80px;
+  height: 30px;
+  border-radius: 10px;
+}
+.zapisz {
+  width: 80px;
+  height: 30px;
+  border-radius: 10px;
 }
 .usun {
   background-color: red;
@@ -31,4 +39,16 @@
   width: 80px;
   height: 40px;
   color: black;
+}
+
+.inputnazwa {
+  width: 150px;
+  height: 25px;
+  font-size: 16px;
+}
+
+.inputkal {
+  width: 120px;
+  height: 30px;
+  font-size: 14px;
 }
