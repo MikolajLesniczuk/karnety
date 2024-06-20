@@ -4,12 +4,13 @@ import {
   Route,
   Routes,
   Navigate,
+  Link,
 } from "react-router-dom";
 import "./App.css";
 import SeniorGroup from "./components/SeniorGroup";
 import JuniorGroup from "./components/JuniorGroup";
 import WelcomePage from "./components/WelcomePage";
-import { AuthProvider, useAuth } from "../src/components/AuthContext";
+import { AuthProvider, useAuth } from "./components/AuthContext";
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
           <header className="App-header">
             <Routes>
               <Route path="/" element={<WelcomePage />} />
-              <Route path="/*" element={<ProtectedRoutes />} />
+              <Route path="/*" element={<Home />} />
             </Routes>
           </header>
         </div>
@@ -28,7 +29,7 @@ function App() {
   );
 }
 
-const ProtectedRoutes = () => {
+const Home = () => {
   const { isAuthenticated } = useAuth();
 
   if (!isAuthenticated) {
@@ -36,11 +37,23 @@ const ProtectedRoutes = () => {
   }
 
   return (
-    <Routes>
-      <Route path="senior" element={<SeniorGroup />} />
-      <Route path="junior" element={<JuniorGroup />} />
-      <Route path="/" element={<Navigate to="senior" />} />
-    </Routes>
+    <div>
+      <nav>
+        <ul>
+          <li>
+            <Link to="junior">Grupa Młodsza</Link>
+          </li>
+          <li>
+            <Link to="senior">Grupa Starsza</Link>
+          </li>
+        </ul>
+      </nav>
+      <Routes>
+        <Route path="senior" element={<SeniorGroup />} />
+        <Route path="junior" element={<JuniorGroup />} />
+        <Route path="/" element={<Navigate to="senior" />} />
+      </Routes>
+    </div>
   );
 };
 
