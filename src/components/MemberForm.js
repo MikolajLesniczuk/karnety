@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { db } from "../firebase";
 import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
 
-const MemberForm = ({ member, onSave, onCancel }) => {
+const MemberForm = ({ member, onSave, onCancel, onClick, collectionName }) => {
   const [name, setName] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,10 +26,10 @@ const MemberForm = ({ member, onSave, onCancel }) => {
 
     try {
       if (member && member.id) {
-        const memberRef = doc(db, "seniorMembers", member.id);
+        const memberRef = doc(db, collectionName, member.id); // Używamy collectionName do określenia kolekcji
         await updateDoc(memberRef, memberData);
       } else {
-        await addDoc(collection(db, "seniorMembers"), memberData);
+        await addDoc(collection(db, collectionName), memberData); // Używamy collectionName do określenia kolekcji
       }
       onSave(); // Remove the parameter
       setName("");
@@ -61,7 +61,7 @@ const MemberForm = ({ member, onSave, onCancel }) => {
           required
         />
       </div>
-      <button type="submit" disabled={isSubmitting}>
+      <button onClick={onClick} type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Zapisywanie..." : "Zapisz"}
       </button>
       <button type="button" onClick={onCancel}>

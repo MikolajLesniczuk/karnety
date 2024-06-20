@@ -4,11 +4,9 @@ import {
   collection,
   addDoc,
   updateDoc,
-  deleteDoc,
-  getDocs,
   doc,
-  query,
-  where,
+  getDocs,
+  deleteDoc,
 } from "firebase/firestore";
 import MemberForm from "./MemberForm";
 import MemberList from "./MemberList";
@@ -39,19 +37,11 @@ const JuniorGroup = () => {
       if (editingMember) {
         const memberRef = doc(db, "juniorMembers", editingMember.id);
         await updateDoc(memberRef, member);
-        setMembers((prevMembers) =>
-          prevMembers.map((m) =>
-            m.id === editingMember.id ? { id: editingMember.id, ...member } : m
-          )
-        );
       } else {
-        const docRef = await addDoc(collection(db, "juniorMembers"), member);
-        setMembers((prevMembers) => [
-          ...prevMembers,
-          { id: docRef.id, ...member },
-        ]);
+        await addDoc(collection(db, "juniorMembers"), member);
       }
       setEditingMember(null);
+      fetchMembers();
     } catch (error) {
       console.error("Error saving member:", error);
     }
@@ -65,7 +55,7 @@ const JuniorGroup = () => {
     try {
       const memberRef = doc(db, "juniorMembers", id);
       await deleteDoc(memberRef);
-      setMembers((prevMembers) => prevMembers.filter((m) => m.id !== id));
+      fetchMembers();
     } catch (error) {
       console.error("Error deleting member:", error);
     }
@@ -75,13 +65,6 @@ const JuniorGroup = () => {
     setEditingMember(null);
   };
 
-  // Sortowanie członków - przeterminowane na samej górze
-  const sortedMembers = [...members].sort((a, b) => {
-    const expiryDateA = new Date(a.expiryDate);
-    const expiryDateB = new Date(b.expiryDate);
-    return expiryDateA - expiryDateB; // Sortowanie od najwcześniejszej daty
-  });
-
   return (
     <div>
       <h1>Młodziaki</h1>
@@ -89,9 +72,11 @@ const JuniorGroup = () => {
         member={editingMember}
         onSave={handleSave}
         onCancel={handleCancel}
+        onClick={fetchMembers}
+        collectionName="juniorMembers" // Przekazujemy nazwę kolekcji
       />
       <MemberList
-        members={sortedMembers} // Używamy posortowanej listy
+        members={members}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />

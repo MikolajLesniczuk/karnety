@@ -73,6 +73,8 @@ const SeniorGroup = () => {
         member={editingMember}
         onSave={handleSave}
         onCancel={handleCancel}
+        onClick={fetchMembers}
+        collectionName="seniorMembers" // Przekazujemy nazwę kolekcji
       />
       <MemberList
         members={members}
