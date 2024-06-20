@@ -26,7 +26,10 @@ const JuniorGroup = () => {
         id: doc.id,
         ...doc.data(),
       }));
-      setMembers(membersData);
+      const sortedMembers = membersData.sort((a, b) => {
+        return new Date(a.expiryDate) - new Date(b.expiryDate);
+      });
+      setMembers(sortedMembers);
     } catch (error) {
       console.error("Error fetching members:", error);
     }

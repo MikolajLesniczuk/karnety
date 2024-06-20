@@ -9,6 +9,8 @@ import {
   deleteDoc,
   getDocs,
   doc,
+  query,
+  orderBy,
 } from "firebase/firestore";
 
 const SeniorGroup = () => {
@@ -21,7 +23,8 @@ const SeniorGroup = () => {
 
   const fetchMembers = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "seniorMembers"));
+      const q = query(collection(db, "seniorMembers"), orderBy("expiryDate"));
+      const querySnapshot = await getDocs(q);
       const membersData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -68,7 +71,7 @@ const SeniorGroup = () => {
 
   return (
     <div>
-      <h1>Senior Group</h1>
+      <h1>Starzy</h1>
       <MemberForm
         member={editingMember}
         onSave={handleSave}
