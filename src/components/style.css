@@ -31,6 +31,7 @@
   width: 80px;
   height: 40px;
   color: black;
+  margin-bottom: 10px;
 }
 .zmiana {
   border-radius: 5px;
@@ -39,6 +40,7 @@
   width: 80px;
   height: 40px;
   color: black;
+  margin-top: 10px;
 }
 
 .inputnazwa {
