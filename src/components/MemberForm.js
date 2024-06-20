@@ -56,7 +56,7 @@ const MemberForm = ({ member, onSave, onCancel, onClick, collectionName }) => {
       <div>
         <label className="kalendarz">Data ważności karnetu:</label>
         <input
-          //   className="inputkal"
+          className="inputkal"
           type="date"
           value={expiryDate}
           onChange={(e) => setExpiryDate(e.target.value)}
