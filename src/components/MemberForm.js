@@ -26,12 +26,12 @@ const MemberForm = ({ member, onSave, onCancel, onClick, collectionName }) => {
 
     try {
       if (member && member.id) {
-        const memberRef = doc(db, collectionName, member.id); // Używamy collectionName do określenia kolekcji
+        const memberRef = doc(db, collectionName, member.id);
         await updateDoc(memberRef, memberData);
       } else {
-        await addDoc(collection(db, collectionName), memberData); // Używamy collectionName do określenia kolekcji
+        await addDoc(collection(db, collectionName), memberData);
       }
-      onSave(); // Remove the parameter
+      onSave();
       setName("");
       setExpiryDate("");
     } catch (error) {

@@ -76,7 +76,7 @@ const JuniorGroup = () => {
         onSave={handleSave}
         onCancel={handleCancel}
         onClick={fetchMembers}
-        collectionName="juniorMembers" // Przekazujemy nazwę kolekcji
+        collectionName="juniorMembers"
       />
       <MemberList
         members={members}

@@ -43,7 +43,7 @@ const SeniorGroup = () => {
       } else {
         await addDoc(collection(db, "seniorMembers"), member);
       }
-      // Fetch the updated members list
+
       setEditingMember(null);
       fetchMembers();
     } catch (error) {
@@ -59,7 +59,7 @@ const SeniorGroup = () => {
     try {
       const memberRef = doc(db, "seniorMembers", id);
       await deleteDoc(memberRef);
-      fetchMembers(); // Fetch the updated members list
+      fetchMembers();
     } catch (error) {
       console.error("Error deleting member:", error);
     }
@@ -77,7 +77,7 @@ const SeniorGroup = () => {
         onSave={handleSave}
         onCancel={handleCancel}
         onClick={fetchMembers}
-        collectionName="seniorMembers" // Przekazujemy nazwę kolekcji
+        collectionName="seniorMembers"
       />
       <MemberList
         members={members}

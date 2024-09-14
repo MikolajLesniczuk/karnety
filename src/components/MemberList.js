@@ -1,5 +1,5 @@
 import React from "react";
-import "../App.css"; // Importujemy arkusz stylów CSS
+import "../App.css";
 import "./style.css";
 
 const MemberList = ({ members, onEdit, onDelete }) => {
